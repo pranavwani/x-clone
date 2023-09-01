@@ -1,118 +1,105 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
+import { BsPeople, BsPerson, BsSearch } from 'react-icons/bs'
+import { CgMoreO } from 'react-icons/cg'
+import { FiBookmark } from 'react-icons/fi'
+import { HiOutlineMail } from 'react-icons/hi'
+import { RiFileListLine, RiNotification3Line, RiHome7Fill } from 'react-icons/ri'
+import { RxCross2 } from 'react-icons/rx'
+import FeedCard from '@/components/FeedCard/index'
 
-const inter = Inter({ subsets: ['latin'] })
+interface XSidebarButtons {
+  title: String,
+  icon: React.ReactNode
+}
+
+const sidebarMenuItems: XSidebarButtons[] = [
+  {
+    title: 'Home',
+    icon: <RiHome7Fill />
+  },
+  {
+    title: 'Explore',
+    icon: <BsSearch />
+  },
+  {
+    title: 'Notifications',
+    icon: <RiNotification3Line />
+  },
+  {
+    title: 'Messages',
+    icon: <HiOutlineMail />
+  },
+  {
+    title: 'Lists',
+    icon: <RiFileListLine />
+  },
+  {
+    title: 'Bookmarks',
+    icon: <FiBookmark />
+  },
+  {
+    title: 'Communities',
+    icon: <BsPeople />
+  },
+  {
+    title: 'Verified',
+    icon: <RxCross2 />
+  },
+  {
+    title: 'Profile',
+    icon: <BsPerson />
+  },
+  {
+    title: 'More',
+    icon: <CgMoreO />
+  }
+]
+
+const postDescriptions = [
+  'But seriously the only way to guarantee meaningful positive change in the next 365 days around the sun is to exit your comfort zone and relentlessly attack your goals. That’s my plan, anyway. Good luck and Happy New Year 🙌🏾',
+  'What if they call USB-C on the iPhone 15 the "magic port" 😅',
+  "I have no idea what to title this next video, but it's one of my favorite stories in tech, and one of the most unique things I've ever shot footage of...",
+  'Uploading...',
+];
 
 export default function Home() {
-  return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">pages/index.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+  return <div className='bg-white'>
+    <div className="grid grid-cols-12 h-screen w-screen px-56">
+      <div className="col-span-3 ml-16">
+        <div className="text-4xl h-fit w-fit hover:bg-gray-200 rounded-full p-2 ml-3 transition-all cursor-pointer">
+          <RxCross2 />
+        </div>
+        <div className='mt-4 text-xl pr-12'>
+          <ul>
+            {sidebarMenuItems.map(item => (
+              <li className='flex justify-start items-center gap-6 mt-3 hover:bg-gray-200 rounded-full py-2 px-5 w-fit transition-all cursor-pointer' key={crypto.randomUUID()}>
+                <span className='text-2xl'>{item.icon}</span>
+                <span>{item.title}</span>
+              </li>
+            ))}
+          </ul>
+          <div className='mt-5'>
+            <button className='bg-[#1d9bf0] p-3 text-xl text-white font-semibold w-full rounded-full'>Post</button>
+          </div>
         </div>
       </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+      <div className="col-span-5 border-l-[1px] border-r-[1px] height-screen overflow-scroll border-gray-100">
+        {postDescriptions.map(description => {
+          return <FeedCard key={crypto.randomUUID()} description={description} />
+        })}
+        {postDescriptions.map(description => {
+          return <FeedCard key={crypto.randomUUID()} description={description} />
+        })}
+        {postDescriptions.map(description => {
+          return <FeedCard key={crypto.randomUUID()} description={description} />
+        })}
+        {postDescriptions.map(description => {
+          return <FeedCard key={crypto.randomUUID()} description={description} />
+        })}
+        {postDescriptions.map(description => {
+          return <FeedCard key={crypto.randomUUID()} description={description} />
+        })}
       </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Discover and deploy boilerplate example Next.js&nbsp;projects.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+      <div className="col-span-3">right</div>
+    </div>
+  </div>
 }
