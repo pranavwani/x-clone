@@ -5,6 +5,11 @@ import { HiOutlineMail } from 'react-icons/hi'
 import { RiFileListLine, RiNotification3Line, RiHome7Fill } from 'react-icons/ri'
 import { RxCross2 } from 'react-icons/rx'
 import FeedCard from '@/components/FeedCard/index'
+import {CredentialResponse, GoogleLogin} from "@react-oauth/google";
+import {useCallback} from "react";
+import toast from "react-hot-toast";
+import {graphqlClient} from "@/clients/api";
+import {verifyUserGoogleTokenQuery} from "@/graphql/query/user";
 
 interface XSidebarButtons {
   title: String,
@@ -62,6 +67,22 @@ const postDescriptions = [
 ];
 
 export default function Home() {
+  const handleLoginWithGoogle = useCallback(
+      async (cred: CredentialResponse) => {
+        const googleToken = cred.credential
+
+        if (!googleToken) return toast.error('Google token not found');
+
+        const { verifyGoogleToken } = await graphqlClient.request(verifyUserGoogleTokenQuery, { token: googleToken });
+
+        if (verifyGoogleToken) window.localStorage.setItem("__x_token", verifyGoogleToken)
+
+        toast.success("Verified Success");
+        console.log(verifyGoogleToken);
+      },
+      []
+  );
+
   return <div className='bg-white'>
     <div className="grid grid-cols-12 h-screen w-screen px-56">
       <div className="col-span-3 ml-16">
@@ -99,7 +120,11 @@ export default function Home() {
           return <FeedCard key={crypto.randomUUID()} description={description} />
         })}
       </div>
-      <div className="col-span-3">right</div>
+      <div className="col-span-3 p-5 rounded-lg">
+        <div>
+          <GoogleLogin onSuccess={handleLoginWithGoogle} />
+        </div>
+      </div>
     </div>
   </div>
 }
