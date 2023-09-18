@@ -10,6 +10,9 @@ import {useCallback} from "react";
 import toast from "react-hot-toast";
 import {graphqlClient} from "@/clients/api";
 import {verifyUserGoogleTokenQuery} from "@/graphql/query/user";
+import {useCurrentUser} from "@/hooks/user";
+import {useQueryClient} from "@tanstack/react-query";
+import Image from "next/image";
 
 interface XSidebarButtons {
   title: String,
@@ -67,8 +70,12 @@ const postDescriptions = [
 ];
 
 export default function Home() {
+  const { user } = useCurrentUser()
+  const queryClient = useQueryClient()
+
   const handleLoginWithGoogle = useCallback(
       async (cred: CredentialResponse) => {
+        console.log('called')
         const googleToken = cred.credential
 
         if (!googleToken) return toast.error('Google token not found');
@@ -78,14 +85,15 @@ export default function Home() {
         if (verifyGoogleToken) window.localStorage.setItem("__x_token", verifyGoogleToken)
 
         toast.success("Verified Success");
-        console.log(verifyGoogleToken);
+
+        await queryClient.invalidateQueries(["current-user"])
       },
-      []
+      [queryClient]
   );
 
   return <div className='bg-white'>
     <div className="grid grid-cols-12 h-screen w-screen px-56">
-      <div className="col-span-3 ml-16">
+      <div className="col-span-3 ml-16 relative">
         <div className="text-4xl h-fit w-fit hover:bg-gray-200 rounded-full p-2 ml-3 transition-all cursor-pointer">
           <RxCross2 />
         </div>
@@ -102,6 +110,27 @@ export default function Home() {
             <button className='bg-[#1d9bf0] p-3 text-xl text-white font-semibold w-full rounded-full'>Post</button>
           </div>
         </div>
+        {
+          user
+          && (
+              <div className="absolute bottom-5 flex gap-2 hover:bg-gray-200 p-3 rounded-full">
+                {
+                  user && user?.profileImageUrl && (
+                      <Image
+                        className="rounded-full"
+                        src={user?.profileImageUrl}
+                        alt="user-image"
+                        height={40}
+                        width={40}
+                      />
+                    )
+                }
+                <div>
+                  <h3 className="font-semibold">{user.firstName} {user.lastName}</h3>
+                </div>
+              </div>
+            )
+        }
       </div>
       <div className="col-span-5 border-l-[1px] border-r-[1px] height-screen overflow-scroll border-gray-100">
         {postDescriptions.map(description => {
@@ -121,9 +150,11 @@ export default function Home() {
         })}
       </div>
       <div className="col-span-3 p-5 rounded-lg">
-        <div>
-          <GoogleLogin onSuccess={handleLoginWithGoogle} />
-        </div>
+        {
+          !user && <div>
+            <GoogleLogin onSuccess={handleLoginWithGoogle}/>
+          </div>
+        }
       </div>
     </div>
   </div>
