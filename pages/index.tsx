@@ -14,6 +14,8 @@ import {useCurrentUser} from "@/hooks/user";
 import {useQueryClient} from "@tanstack/react-query";
 import Image from "next/image";
 import {GoFileMedia} from "react-icons/go";
+import {useCreatePost, useGetAllPosts} from "@/hooks/post";
+import {Post} from "@/gql/graphql";
 
 interface XSidebarButtons {
   title: String,
@@ -63,18 +65,13 @@ const sidebarMenuItems: XSidebarButtons[] = [
   }
 ]
 
-const postDescriptions = [
-  'But seriously the only way to guarantee meaningful positive change in the next 365 days around the sun is to exit your comfort zone and relentlessly attack your goals. That’s my plan, anyway. Good luck and Happy New Year 🙌🏾',
-  'What if they call USB-C on the iPhone 15 the "magic port" 😅',
-  "I have no idea what to title this next video, but it's one of my favorite stories in tech, and one of the most unique things I've ever shot footage of...",
-  'Uploading...',
-];
-
 export default function Home() {
   const { user } = useCurrentUser()
   const queryClient = useQueryClient()
-  const [newPostLength, setNewPostLength] = useState('')
-  const isNewPostButtonDisabled = newPostLength.length === 0;
+  const [content, setContent] = useState('')
+  const { posts = [] } = useGetAllPosts()
+  const { mutate } = useCreatePost()
+  const isNewPostButtonDisabled = content.length === 0;
 
   const handleLoginWithGoogle = useCallback(
       async (cred: CredentialResponse) => {
@@ -100,9 +97,11 @@ export default function Home() {
     input.click()
   }, [])
 
-  const handlePostChange = ((event: any) => {
-    setNewPostLength(event.target.value);
-  })
+  const handleCreatePost = useCallback(async () => {
+    mutate({
+      content,
+    })
+  }, [content, mutate])
 
   return <div className='bg-white'>
     <div className="grid grid-cols-12 h-screen w-screen px-56">
@@ -161,31 +160,26 @@ export default function Home() {
               }
             </div>
             <div className="col-span-11">
-              <textarea onChange={handlePostChange} className="w-full resize-none text-xl px-3 placeholder-gray-500 border-b border-gray-100" rows={4} placeholder="What is happening?!"></textarea>
+              <textarea
+                  onChange={(event) => setContent(event.target.value)}
+                  className="w-full resize-none text-xl px-3 placeholder-gray-500 border-b border-gray-100"
+                  rows={4}
+                  placeholder="What is happening?!"
+              />
               <div className="mt-2 flex items-center justify-between">
                 <GoFileMedia className="text-[#1d9bf0]" onClick={handleSelectImage}/>
                 <div>
-                  <button className='bg-[#1d9bf0] px-4 py-1.5 text-white font-semibold w-full rounded-full disabled:opacity-50' disabled={isNewPostButtonDisabled}>Post</button>
+                  <button onClick={handleCreatePost} className='bg-[#1d9bf0] px-4 py-1.5 text-white font-semibold w-full rounded-full disabled:opacity-50' disabled={isNewPostButtonDisabled}>Post</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        {/*{postDescriptions.map(description => {
-          return <FeedCard key={crypto.randomUUID()} description={description} />
-        })}
-        {postDescriptions.map(description => {
-          return <FeedCard key={crypto.randomUUID()} description={description} />
-        })}
-        {postDescriptions.map(description => {
-          return <FeedCard key={crypto.randomUUID()} description={description} />
-        })}
-        {postDescriptions.map(description => {
-          return <FeedCard key={crypto.randomUUID()} description={description} />
-        })}
-        {postDescriptions.map(description => {
-          return <FeedCard key={crypto.randomUUID()} description={description} />
-        })}*/}
+        {
+          posts?.map(post => (
+              post ? <FeedCard key={post?.id} data={post as Post} /> : null
+          ))
+        }
       </div>
       <div className="col-span-3 p-5 rounded-lg">
         {
