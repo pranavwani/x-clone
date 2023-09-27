@@ -1,193 +1,118 @@
-import { BsPeople, BsPerson, BsSearch } from 'react-icons/bs'
-import { CgMoreO } from 'react-icons/cg'
-import { FiBookmark } from 'react-icons/fi'
-import { HiOutlineMail } from 'react-icons/hi'
-import { RiFileListLine, RiNotification3Line, RiHome7Fill } from 'react-icons/ri'
-import { FaXTwitter } from 'react-icons/fa6'
 import FeedCard from '@/components/FeedCard/index'
-import {CredentialResponse, GoogleLogin} from "@react-oauth/google";
-import {useCallback, useState } from "react";
-import toast from "react-hot-toast";
-import {graphqlClient} from "@/clients/api";
-import {verifyUserGoogleTokenQuery} from "@/graphql/query/user";
-import {useCurrentUser} from "@/hooks/user";
-import {useQueryClient} from "@tanstack/react-query";
+import { useCallback, useState } from "react";
+import { useCurrentUser } from "@/hooks/user";
 import Image from "next/image";
-import {GoFileMedia} from "react-icons/go";
-import {useCreatePost, useGetAllPosts} from "@/hooks/post";
-import {Post} from "@/gql/graphql";
-
-interface XSidebarButtons {
-  title: String,
-  icon: React.ReactNode
-}
-
-const sidebarMenuItems: XSidebarButtons[] = [
-  {
-    title: 'Home',
-    icon: <RiHome7Fill />
-  },
-  {
-    title: 'Explore',
-    icon: <BsSearch />
-  },
-  {
-    title: 'Notifications',
-    icon: <RiNotification3Line />
-  },
-  {
-    title: 'Messages',
-    icon: <HiOutlineMail />
-  },
-  {
-    title: 'Lists',
-    icon: <RiFileListLine />
-  },
-  {
-    title: 'Bookmarks',
-    icon: <FiBookmark />
-  },
-  {
-    title: 'Communities',
-    icon: <BsPeople />
-  },
-  {
-    title: 'Verified',
-    icon: <FaXTwitter />
-  },
-  {
-    title: 'Profile',
-    icon: <BsPerson />
-  },
-  {
-    title: 'More',
-    icon: <CgMoreO />
-  }
-]
+import { GoFileMedia } from "react-icons/go";
+import { useCreatePost, useGetAllPosts } from "@/hooks/post";
+import { Post } from "@/gql/graphql";
+import XLayout from "@/components/Layout/XLayout";
+import {BsEmojiSmile} from "react-icons/bs";
+import {graphqlClient} from "@/clients/api";
+import {getSignedURLForPostQuery} from "@/graphql/query/post";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function Home() {
   const { user } = useCurrentUser()
-  const queryClient = useQueryClient()
   const [content, setContent] = useState('')
+  const [imageURL, setImageURL] = useState('')
   const { posts = [] } = useGetAllPosts()
   const { mutate } = useCreatePost()
   const isNewPostButtonDisabled = content.length === 0;
 
-  const handleLoginWithGoogle = useCallback(
-      async (cred: CredentialResponse) => {
-        const googleToken = cred.credential
+  const handleInputChangeFile = useCallback((input: HTMLInputElement) => {
+    return async (event: Event) => {
+      event.preventDefault()
 
-        if (!googleToken) return toast.error('Google token not found');
+      const file: File = input.files?.item(0) as File
 
-        const { verifyGoogleToken } = await graphqlClient.request(verifyUserGoogleTokenQuery, { token: googleToken });
+      if (!file) return;
 
-        if (verifyGoogleToken) window.localStorage.setItem("__x_token", verifyGoogleToken)
+      const { getSignedURLForPost} = await graphqlClient.request(getSignedURLForPostQuery, {
+        imageName: file.name,
+        imageType: file.type
+      })
 
-        toast.success("Verified Success");
+      if (getSignedURLForPost) {
+        toast.loading("Uploading...", { id: "2" });
 
-        await queryClient.invalidateQueries(["current-user"])
-      },
-      [queryClient]
-  );
+        await axios.put(getSignedURLForPost, file, {
+          headers: {
+            'Content-Type': file.type
+          }
+        })
+
+        toast.success("Upload Completed", { id: "2" });
+
+        const url = new URL(getSignedURLForPost)
+
+        setImageURL(`${url.origin}${url.pathname}`)
+      }
+    }
+  }, [])
 
   const handleSelectImage = useCallback(() => {
     const input = document.createElement("input");
     input.setAttribute("type", "file");
     input.setAttribute("accept", "image/*")
+
+    input.addEventListener("change", handleInputChangeFile(input))
+
     input.click()
-  }, [])
+  }, [handleInputChangeFile])
 
   const handleCreatePost = useCallback(async () => {
     mutate({
       content,
+      imageURL
     })
+
+    setContent('')
+    setImageURL('')
   }, [content, mutate])
 
-  return <div className='bg-white'>
-    <div className="grid grid-cols-12 h-screen w-screen px-56">
-      <div className="col-span-3 ml-16 relative">
-        <div className="text-3xl h-fit w-fit hover:bg-gray-200 rounded-full p-2 ml-3 transition-all cursor-pointer">
-          <FaXTwitter />
-        </div>
-        <div className='mt-4 text-xl pr-12'>
-          <ul>
-            {sidebarMenuItems.map(item => (
-              <li className='flex justify-start items-center gap-6 mt-3 hover:bg-gray-200 rounded-full py-2 px-5 w-fit transition-all cursor-pointer' key={crypto.randomUUID()}>
-                <span className='text-2xl'>{item.icon}</span>
-                <span>{item.title}</span>
-              </li>
-            ))}
-          </ul>
-          <div className='mt-5'>
-            <button className='bg-[#1d9bf0] p-3 text-xl text-white font-semibold w-full rounded-full'>Post</button>
-          </div>
-        </div>
-        {
-          user
-          && (
-              <div className="absolute bottom-5 flex gap-2 hover:bg-gray-200 p-3 rounded-full">
-                {
-                  user && user?.profileImageUrl && (
-                      <Image
-                        className="rounded-full"
-                        src={user?.profileImageUrl}
-                        alt="user-image"
-                        height={40}
-                        width={40}
-                      />
-                    )
-                }
-                <div>
-                  <h3 className="font-semibold">{user.firstName} {user.lastName}</h3>
-                </div>
-              </div>
-            )
-        }
-      </div>
-      <div className="col-span-5 border-l-[1px] border-r-[1px] height-screen overflow-scroll border-gray-100">
-        <div className="border border-b-0 border-x-0 p-4">
-          <div className="grid grid-cols-12 gap-2">
-            <div className="col-span-1 cursor-pointer">
-              {
+  return <div>
+    <XLayout>
+      <div className="border border-b-0 border-x-0 p-4">
+        <div className="grid grid-cols-12 gap-2">
+          <div className="col-span-1 cursor-pointer">
+            {
                 user?.profileImageUrl &&
-                  <Image
-                      src={user?.profileImageUrl}
-                      alt="user-image"
-                      height={50}
-                      width={50}
-                      className="rounded-full"
-                  />
-              }
-            </div>
-            <div className="col-span-11">
+                <Image
+                    src={user?.profileImageUrl}
+                    alt="user-image"
+                    height={50}
+                    width={50}
+                    className="rounded-full"
+                />
+            }
+          </div>
+          <div className="col-span-11">
               <textarea
+                  value={content}
                   onChange={(event) => setContent(event.target.value)}
                   className="w-full resize-none text-xl px-3 placeholder-gray-500 border-b border-gray-100"
                   rows={4}
                   placeholder="What is happening?!"
               />
-              <div className="mt-2 flex items-center justify-between">
-                <GoFileMedia className="text-[#1d9bf0]" onClick={handleSelectImage}/>
-                <div>
-                  <button onClick={handleCreatePost} className='bg-[#1d9bf0] px-4 py-1.5 text-white font-semibold w-full rounded-full disabled:opacity-50' disabled={isNewPostButtonDisabled}>Post</button>
-                </div>
+            {
+              imageURL && <Image src={imageURL} alt="post-image" height={300} width={300} />
+            }
+            <div className="mt-2 flex items-center justify-between">
+              <GoFileMedia className="text-[#1d9bf0]" onClick={handleSelectImage}/>
+              <BsEmojiSmile className="text-[#1d9bf0]" />
+              <div>
+                <button onClick={handleCreatePost} className='bg-[#1d9bf0] px-4 py-1.5 text-white font-semibold w-full rounded-full disabled:opacity-50' disabled={isNewPostButtonDisabled}>Post</button>
               </div>
             </div>
           </div>
         </div>
-        {
-          posts?.map(post => (
-              post ? <FeedCard key={post?.id} data={post as Post} /> : null
-          ))
-        }
       </div>
-      <div className="col-span-3 p-5 rounded-lg">
-        {
-          !user && <div>
-            <GoogleLogin onSuccess={handleLoginWithGoogle}/>
-          </div>
-        }
-      </div>
-    </div>
+      {
+        posts?.map(post => (
+            post ? <FeedCard key={post?.id} data={post as Post} /> : null
+        ))
+      }
+    </XLayout>
   </div>
 }
