@@ -13,7 +13,7 @@ interface FeedCardProps {
 const FeedCard: React.FC<FeedCardProps> = (props) => {
 
   const { data } = props
-  console.log(data)
+
   return (
     <div className="border border-b-0 border-x-0 p-2 hover:bg-gray-100 transition-all cursor-pointer">
       <div className="grid grid-cols-12 gap-2">
