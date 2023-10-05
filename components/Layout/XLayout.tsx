@@ -33,51 +33,51 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
             icon: <RiHome7Fill />,
             link: '/'
         },
-        {
-            title: 'Explore',
-            icon: <BsSearch />,
-            link: '/'
-        },
-        {
-            title: 'Notifications',
-            icon: <RiNotification3Line />,
-            link: '/'
-        },
-        {
-            title: 'Messages',
-            icon: <HiOutlineMail />,
-            link: '/'
-        },
-        {
-            title: 'Lists',
-            icon: <RiFileListLine />,
-            link: '/'
-        },
-        {
-            title: 'Bookmarks',
-            icon: <FiBookmark />,
-            link: '/'
-        },
-        {
-            title: 'Communities',
-            icon: <BsPeople />,
-            link: '/'
-        },
-        {
-            title: 'Verified',
-            icon: <FaXTwitter />,
-            link: '/'
-        },
+        // {
+        //     title: 'Explore',
+        //     icon: <BsSearch />,
+        //     link: '/'
+        // },
+        // {
+        //     title: 'Notifications',
+        //     icon: <RiNotification3Line />,
+        //     link: '/'
+        // },
+        // {
+        //     title: 'Messages',
+        //     icon: <HiOutlineMail />,
+        //     link: '/'
+        // },
+        // {
+        //     title: 'Lists',
+        //     icon: <RiFileListLine />,
+        //     link: '/'
+        // },
+        // {
+        //     title: 'Bookmarks',
+        //     icon: <FiBookmark />,
+        //     link: '/'
+        // },
+        // {
+        //     title: 'Communities',
+        //     icon: <BsPeople />,
+        //     link: '/'
+        // },
+        // {
+        //     title: 'Verified',
+        //     icon: <FaXTwitter />,
+        //     link: '/'
+        // },
         {
             title: 'Profile',
             icon: <BsPerson />,
             link: `/${user?.id}`
         },
-        {
-            title: 'More',
-            icon: <CgMoreO />,
-            link: '/'
-        }
+        // {
+        //     title: 'More',
+        //     icon: <CgMoreO />,
+        //     link: '/'
+        // }
     ], [user?.id]);
 
     const handleLoginWithGoogle = useCallback(
