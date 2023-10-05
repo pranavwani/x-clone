@@ -72,7 +72,7 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
             title: 'Profile',
             icon: <BsPerson />,
             link: `/${user?.id}`
-        },
+        }
         // {
         //     title: 'More',
         //     icon: <CgMoreO />,
