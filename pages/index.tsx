@@ -11,14 +11,19 @@ import {graphqlClient} from "@/clients/api";
 import {getSignedURLForPostQuery} from "@/graphql/query/post";
 import axios from "axios";
 import toast from "react-hot-toast";
+import {CredentialResponse, GoogleLogin} from "@react-oauth/google";
+import {verifyUserGoogleTokenQuery} from "@/graphql/query/user";
+import {useQueryClient} from "@tanstack/react-query";
+import {FaXTwitter} from "react-icons/fa6";
 
 export default function Home() {
-  const { user } = useCurrentUser()
+  const { user} = useCurrentUser()
   const [content, setContent] = useState('')
   const [imageURL, setImageURL] = useState('')
   const { posts = [] } = useGetAllPosts()
   const { mutate } = useCreatePost()
   const isNewPostButtonDisabled = content.length === 0;
+  const queryClient = useQueryClient()
 
   const handleInputChangeFile = useCallback((input: HTMLInputElement) => {
     return async (event: Event) => {
@@ -71,48 +76,94 @@ export default function Home() {
     setImageURL('')
   }, [content, imageURL, mutate])
 
+  const handleLoginWithGoogle = useCallback(
+      async (cred: CredentialResponse) => {
+        const googleToken = cred.credential
+
+        if (!googleToken) return toast.error('Google token not found');
+
+        const { verifyGoogleToken } = await graphqlClient.request(verifyUserGoogleTokenQuery, { token: googleToken });
+
+        if (verifyGoogleToken) window.localStorage.setItem("__x_token", verifyGoogleToken)
+
+        toast.success("Verified Success");
+
+        await queryClient.invalidateQueries(["current-user"])
+      },
+      [queryClient]
+  );
+
   return <div>
-    <XLayout>
-      <div className="p-4">
-        <div className="grid grid-cols-12 gap-2">
-          <div className="col-span-1 cursor-pointer">
-            {
-                user?.profileImageUrl &&
-                <Image
-                    src={user?.profileImageUrl}
-                    alt="user-image"
-                    height={50}
-                    width={50}
-                    className="rounded-full"
+    {
+      user && <XLayout>
+        <div className="p-4">
+          <div className="grid grid-cols-12 gap-2">
+            <div className="col-span-1 cursor-pointer">
+              {
+                  user?.profileImageUrl &&
+                  <Image
+                      src={user?.profileImageUrl}
+                      alt="user-image"
+                      height={50}
+                      width={50}
+                      className="rounded-full"
+                  />
+              }
+            </div>
+            <div className="col-span-11">
+                <textarea
+                    value={content}
+                    onChange={(event) => setContent(event.target.value)}
+                    className="w-full resize-none text-xl px-3 placeholder-gray-500 border-b border-gray-100 dark:border-gray-700"
+                    rows={4}
+                    placeholder="What is happening?!"
                 />
-            }
-          </div>
-          <div className="col-span-11">
-              <textarea
-                  value={content}
-                  onChange={(event) => setContent(event.target.value)}
-                  className="w-full resize-none text-xl px-3 placeholder-gray-500 border-b border-gray-100 dark:border-gray-700"
-                  rows={4}
-                  placeholder="What is happening?!"
-              />
-            {
-              imageURL && <Image src={imageURL} alt="post-image" height={300} width={300} />
-            }
-            <div className="mt-2 flex items-center justify-between">
-              <GoFileMedia className="text-[#1d9bf0]" onClick={handleSelectImage}/>
-              <BsEmojiSmile className="text-[#1d9bf0]" />
-              <div>
-                <button onClick={handleCreatePost} className='bg-[#1d9bf0] px-4 py-1.5 text-white font-semibold w-full rounded-full disabled:opacity-50' disabled={isNewPostButtonDisabled}>Post</button>
+              {
+                  imageURL && <Image src={imageURL} alt="post-image" height={300} width={300}/>
+              }
+              <div className="mt-2 flex items-center justify-between">
+                <GoFileMedia className="text-[#1d9bf0]" onClick={handleSelectImage}/>
+                <BsEmojiSmile className="text-[#1d9bf0]"/>
+                <div>
+                  <button onClick={handleCreatePost}
+                          className='bg-[#1d9bf0] px-4 py-1.5 text-white font-semibold w-full rounded-full disabled:opacity-50'
+                          disabled={isNewPostButtonDisabled}>Post
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      {
-        posts?.map(post => (
-            post ? <FeedCard key={post?.id} data={post as Post} /> : null
-        ))
-      }
-    </XLayout>
+        {
+          posts?.map(post => (
+              post ? <FeedCard key={post?.id} data={post as Post}/> : null
+          ))
+        }
+      </XLayout>
+    }
+
+    {
+        !user && <div className="sm:grid grid-cols-12 h-screen">
+            <div className="hidden col-span-6 text-[400px] sm:flex justify-center items-center">
+              <FaXTwitter />
+            </div>
+            <div className="sm:hidden text-5xl ml-10 mt-10">
+              <FaXTwitter />
+            </div>
+            <div className="sm:col-span-6 p-[16px] h-screen flex sm:items-center">
+              <div className="p-[20px]">
+                <div className="my-[50px]">
+                  <span className="text-4xl sm:text-6xl font-extrabold">Happening now</span>
+                </div>
+                <div className="mb-10">
+                  <span className="text-2xl sm:text-3xl font-bold">Join today.</span>
+                </div>
+                <div>
+                  <GoogleLogin shape="circle" width="280" onSuccess={handleLoginWithGoogle} />
+                </div>
+              </div>
+            </div>
+        </div>
+    }
   </div>
 }
