@@ -69,11 +69,11 @@ export default function Home() {
 
     setContent('')
     setImageURL('')
-  }, [content, mutate])
+  }, [content, imageURL, mutate])
 
   return <div>
     <XLayout>
-      <div className="border border-b-0 border-x-0 p-4">
+      <div className="p-4">
         <div className="grid grid-cols-12 gap-2">
           <div className="col-span-1 cursor-pointer">
             {
@@ -91,7 +91,7 @@ export default function Home() {
               <textarea
                   value={content}
                   onChange={(event) => setContent(event.target.value)}
-                  className="w-full resize-none text-xl px-3 placeholder-gray-500 border-b border-gray-100"
+                  className="w-full resize-none text-xl px-3 placeholder-gray-500 border-b border-gray-100 dark:border-gray-700"
                   rows={4}
                   placeholder="What is happening?!"
               />

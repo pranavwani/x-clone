@@ -19,7 +19,7 @@ const UserProfilePage: NextPage<ServerProps> = (props) => {
         <XLayout>
             <div>
                 <nav className="flex items-center gap-3 pl-2 text-xl">
-                    <Link href="/" className="hover:bg-gray-100 p-2 rounded-full">
+                    <Link href="/" className="hover:bg-gray-100 dark:hover:bg-gray-900 p-2 rounded-full">
                         <BiArrowBack />
                     </Link>
                     <div className="pl-5">
@@ -27,22 +27,22 @@ const UserProfilePage: NextPage<ServerProps> = (props) => {
                         <h1 className="text-xs text-gray-700">{userInfo?.posts?.length} Posts</h1>
                     </div>
                 </nav>
-                <div className="pl-4 pb-5 pt-10 bg-gray-200 border-b border-slate-200">
+                <div className="pl-4 pb-5 pt-10 bg-gray-200 dark:bg-gray-900">
                     {
                         userInfo?.profileImageUrl
                         && <Image
-                            className="rounded-full border-4 border-white"
+                            className="rounded-full border-4 border-white dark:border-black"
                             src={userInfo?.profileImageUrl}
                             alt="user-profile-image"
-                            width={120}
-                            height={120}
+                            width={140}
+                            height={140}
                         />
                     }
                     <div className="mt-5">
                         <h1 className="text-xl font-semibold">{userInfo?.firstName} {userInfo?.lastName}</h1>
                     </div>
                 </div>
-                <div>
+                <div className="border-gray-100 dark:border-gray-700">
                     {
                         userInfo?.posts
                         && userInfo?.posts?.map(post => (post ? <FeedCard data={post as Post} key={post.id} />: null ))

@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {FaXTwitter} from "react-icons/fa6";
 import Image from "next/image";
 import {CredentialResponse, GoogleLogin} from "@react-oauth/google";
@@ -97,18 +97,20 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
         [queryClient]
     );
 
-    return <div className='bg-white'>
+    return <div >
         <div className="grid grid-cols-12 h-screen w-screen sm:px-56">
             <div className="col-span-2 sm:col-span-3 sm:ml-12 relative">
                 <div>
-                    <div className="text-3xl h-fit w-fit hover:bg-gray-200 rounded-full p-2 ml-3 transition-all cursor-pointer">
+                    <div
+                        className="text-3xl h-fit w-fit hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full p-2 ml-3 transition-all cursor-pointer"
+                    >
                         <FaXTwitter />
                     </div>
                     <div className='mt-4 text-xl pr-12'>
                         <ul>
                             {sidebarMenuItems.map(item => (
                                 <li key={crypto.randomUUID()}>
-                                    <Link href={item.link} className='flex justify-start items-center gap-6 mt-3 hover:bg-gray-200 rounded-full py-2 px-5 w-fit transition-all cursor-pointer'>
+                                    <Link href={item.link} className={`flex justify-start items-center gap-6 mt-3 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full py-2 px-5 w-fit transition-all cursor-pointer`}>
                                         <span className='text-2xl'>{item.icon}</span>
                                         <span className="hidden sm:block">{item.title}</span>
                                     </Link>
@@ -123,7 +125,7 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
                 {
                     user
                     && (
-                        <div className="absolute bottom-5 flex gap-2 hover:bg-gray-200 p-3 rounded-full">
+                        <div className={`absolute bottom-5 flex gap-2 hover:bg-gray-200 dark:hover:bg-gray-900 p-3 rounded-full`}>
                             {
                                 user && user?.profileImageUrl && (
                                     <Image
@@ -142,7 +144,7 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
                     )
                 }
             </div>
-            <div className="col-span-10 sm:col-span-5 border-l-[1px] border-r-[1px] height-screen overflow-scroll border-gray-100">
+            <div className="col-span-10 sm:col-span-5 border-l-[1px] border-r-[1px] height-screen overflow-scroll border-gray-100 dark:border-gray-700">
                 {props.children}
             </div>
             <div className="hidden sm:col-span-3 sm:block p-5 rounded-lg">

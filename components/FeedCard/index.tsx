@@ -15,7 +15,7 @@ const FeedCard: React.FC<FeedCardProps> = (props) => {
   const { data } = props
 
   return (
-    <div className="border border-b-0 border-x-0 p-2 hover:bg-gray-100 transition-all cursor-pointer">
+    <div className="border-t border-inherit p-2 hover:bg-gray-100 dark:hover:bg-gray-900 transition-all cursor-pointer">
       <div className="grid grid-cols-12 gap-2">
         <div className="col-span-1">
           {data.author?.profileImageUrl && <Image
