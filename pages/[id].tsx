@@ -1,6 +1,7 @@
 import type {GetServerSideProps, NextPage} from "next";
 import XLayout from "@/components/Layout/XLayout";
 import {BiArrowBack} from "react-icons/bi";
+import {MdOutlineDateRange} from "react-icons/md";
 import Image from "next/image";
 import FeedCard from "@/components/FeedCard";
 import {Post, User} from "@/gql/graphql";
@@ -14,6 +15,10 @@ interface ServerProps {
 
 const UserProfilePage: NextPage<ServerProps> = (props) => {
     const {userInfo} = props
+
+    const createdAt = new Date(Number(userInfo?.createdAt))
+
+    const joinedAtString = `${createdAt.toLocaleString('default', { month: 'long' })} ${createdAt.getFullYear()}`
 
     return <div>
         <XLayout>
@@ -40,6 +45,10 @@ const UserProfilePage: NextPage<ServerProps> = (props) => {
                     }
                     <div className="mt-5">
                         <h1 className="text-xl font-semibold">{userInfo?.firstName} {userInfo?.lastName}</h1>
+                    </div>
+                    <div className="flex items-center gap-2 mt-5 text-gray-700 dark:text-gray-500">
+                        <MdOutlineDateRange />
+                        <span>Joined {joinedAtString}</span>
                     </div>
                 </div>
                 <div className="border-gray-100 dark:border-gray-700">

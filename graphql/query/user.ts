@@ -39,6 +39,7 @@ export const getUserByID = graphql(`
         lastName
         email
         profileImageUrl
+        createdAt
         posts {
           id
           content
