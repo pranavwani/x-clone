@@ -6,13 +6,14 @@ import {useCurrentUser} from "@/hooks/user";
 import {RiFileListLine, RiHome7Fill, RiNotification3Line} from "react-icons/ri";
 import {BsPeople, BsPerson, BsSearch} from "react-icons/bs";
 import {HiOutlineMail} from "react-icons/hi";
-import {FiBookmark} from "react-icons/fi";
+import {FiBookmark, FiSearch} from "react-icons/fi";
 import {CgMoreO} from "react-icons/cg";
 import toast from "react-hot-toast";
 import {graphqlClient} from "@/clients/api";
 import {verifyUserGoogleTokenQuery} from "@/graphql/query/user";
 import {useQueryClient} from "@tanstack/react-query";
 import Link from "next/link";
+import {log} from "util";
 
 interface XSidebarButtons {
     title: String,
@@ -79,7 +80,32 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
         //     link: '/'
         // }
     ], [user?.id]);
+    const bottombarMenuItems: XSidebarButtons[] = useMemo(() => [
+        {
+            title: 'Home',
+            icon: <RiHome7Fill/>,
+            link: '/'
+        },
+        {
+            title: 'Search',
+            icon: <FiSearch />,
+            link: '/'
+        },
+        {
+            title: 'Notifications',
+            icon: <RiNotification3Line />,
+            link: '/'
+        },
+        {
+            title: 'Messages',
+            icon: <HiOutlineMail />,
+            link: '/'
+        },
+    ], [])
     const profileMenu: HTMLElement = document.getElementById("profileMenu") as HTMLElement
+    const sidebarMenu: HTMLElement = document.getElementById("sidebarMenu") as HTMLElement
+    const topbarMenu: HTMLElement = document.getElementById("topbarMenu") as HTMLElement
+
     const handleLoginWithGoogle = useCallback(
         async (cred: CredentialResponse) => {
             const googleToken = cred.credential
@@ -97,9 +123,58 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
         [queryClient]
     );
 
+    function openSidebar() {
+        sidebarMenu?.classList.remove('-translate-x-full');
+        sidebarMenu.classList.add("shadow-lg")
+    }
+    // Function to close the sidebar
+    function closeSidebar() {
+        sidebarMenu?.classList.add('-translate-x-full');
+        sidebarMenu.classList.remove("shadow-lg")
+    }
+
+    const handleOnPageClick = (event: any) => {
+        if (!sidebarMenu?.contains(event.target) && !topbarMenu?.contains(event.target)) {
+            closeSidebar()
+        }
+    }
+
+    useEffect(() => {
+        document.addEventListener('click', handleOnPageClick)
+
+        return () => {
+            document.removeEventListener('click', handleOnPageClick)
+        }
+    }, [])
+
     return <div>
         <div className="grid grid-cols-12 h-screen w-screen sm:px-56">
-            <div className="col-span-2 sm:col-span-3 sm:ml-12 relative">
+            <div id="topbarMenu" className="sm:hidden flex w-screen p-2 border-b-[1px] border-gray-100">
+                <div
+                    className="hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full"
+                    onClick={() => {
+                        openSidebar()
+                    }}
+                >
+                    {
+                        user && user?.profileImageUrl && (
+                            <Image
+                                className="rounded-full "
+                                src={user?.profileImageUrl}
+                                alt="user-image"
+                                height={25}
+                                width={25}
+                            />
+                        )
+                    }
+                </div>
+                <div
+                    className="absolute right-[50%] text-2xl hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full transition-all cursor-pointer"
+                >
+                    <FaXTwitter/>
+                </div>
+            </div>
+            <div id="sidebarMenu" className="absolute shadow-lg h-screen sm:col-span-3 sm:ml-12 bg-white sm:relative transform -translate-x-full sm:-translate-x-0 transition-transform duration-300 cursor-pointer">
                 <div>
                     <div
                         className="text-3xl h-fit w-fit hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full p-2 ml-3 transition-all cursor-pointer">
@@ -112,12 +187,12 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
                                     <Link href={item.link}
                                           className={`flex justify-start items-center gap-6 mt-3 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full py-2 px-5 w-fit transition-all cursor-pointer`}>
                                         <span className='text-2xl'>{item.icon}</span>
-                                        <span className="hidden sm:block">{item.title}</span>
+                                        <span>{item.title}</span>
                                     </Link>
                                 </li>
                             ))}
                         </ul>
-                        <div className="hidden mt-5 sm:block">
+                        <div className="mt-5 ml-5">
                             <button
                                 className="bg-[#1d9bf0] p-3 text-xl text-white font-semibold w-full rounded-full disabled:opacity-50"
                                 disabled={true}
@@ -147,7 +222,6 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
                             <div
                                 className="flex gap-2 w-fit hover:bg-gray-200 dark:hover:bg-gray-900 p-3 rounded-full"
                                 onClick={() => {
-                                    console.log(profileMenu)
                                     profileMenu.style.display = profileMenu?.style.display === "block" ? "none" : "block"
                                 }}
                             >
@@ -163,7 +237,7 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
                                     )
                                 }
                                 <div>
-                                    <h3 className="hidden font-semibold sm:block">{user.firstName} {user.lastName}</h3>
+                                    <h3 className="font-semibold">{user.firstName} {user.lastName}</h3>
                                 </div>
                             </div>
                         </div>
@@ -171,7 +245,7 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
                 }
             </div>
             <div
-                className="col-span-10 sm:col-span-5 border-l-[1px] border-r-[1px] height-screen overflow-scroll border-gray-100 dark:border-gray-700">
+                className="col-span-12 sm:col-span-5 border-l-[1px] border-r-[1px] height-screen overflow-scroll border-gray-100 dark:border-gray-700">
                 {props.children}
             </div>
             <div className="hidden sm:col-span-3 sm:block p-5 border-gray-100 dark:border-gray-700">
@@ -187,6 +261,22 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
 
                         <GoogleLogin shape="circle" width="250" onSuccess={handleLoginWithGoogle}/>
                     </div>
+                }
+            </div>
+            <div className="sm:hidden w-screen border-y-[1px]">
+                {user &&
+                    <ul className="flex justify-around">
+                        {bottombarMenuItems.map(item => (
+                            <li key={crypto.randomUUID()} className="p-2 px-4">
+                                <Link href={item.link}
+                                      className="mt-3 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full w-fit transition-all cursor-pointer"
+                                >
+                                    <span className='text-2xl'>{item.icon}</span>
+                                    <span className="hidden sm:block">{item.title}</span>
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
                 }
             </div>
         </div>
