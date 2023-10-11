@@ -191,11 +191,12 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
                     <FaXTwitter/>
                 </div>
             </div>
-            <div id="sidebarMenu" className="absolute shadow-lg sm:shadow-none h-screen sm:col-span-3 sm:ml-12 bg-white sm:relative transform -translate-x-full sm:-translate-x-0 transition-transform duration-300 cursor-pointer">
+            <div id="sidebarMenu" className="absolute shadow-lg sm:shadow-none h-screen sm:col-span-3 sm:ml-12 bg-white sm:relative transform -translate-x-full sm:-translate-x-0 transition-transform duration-300 cursor-pointer z-50">
                 <div>
-                    <div
-                        className="text-3xl h-fit w-fit hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full p-2 ml-3 transition-all cursor-pointer">
-                        <FaXTwitter/>
+                    <div className="text-3xl h-fit w-fit hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full p-2 ml-3 transition-all cursor-pointer" onClick={() => closeSidebar()}>
+                        <Link href="/">
+                            <FaXTwitter/>
+                        </Link>
                     </div>
                     {user && <div className="mt-4 text-xl pr-12">
                         <ul>
@@ -283,13 +284,13 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
                     </div>
                 }
             </div>
-            <div className="sm:hidden w-screen border-y-[1px] fixed bottom-0 bg-white">
+            <div className="sm:hidden w-screen border-y-[1px] fixed bottom-0 bg-white z-40">
                 {user &&
                     <ul className="flex justify-around">
                         {bottombarMenuItems.map(item => (
-                            <li key={crypto.randomUUID()} className="pt-4 pb-4">
+                            <li key={crypto.randomUUID()}>
                                 <Link href={item.link}
-                                      className="mt-3 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full w-fit transition-all cursor-pointer disabled:opacity-50"
+                                      className="block p-4 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full w-fit transition-all cursor-pointer disabled:opacity-50"
                                       aria-disabled={item.disabled}
                                 >
                                     <span className='text-2xl'>{item.icon}</span>
