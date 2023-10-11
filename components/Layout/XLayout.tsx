@@ -166,7 +166,7 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
 
     return <div>
         <div className="grid grid-cols-12 h-screen w-screen sm:px-56">
-            <div id="topbarMenu" className="sm:hidden flex w-screen p-2 border-b-[1px] border-gray-100">
+            <div id="topbarMenu" className="sm:hidden flex w-screen p-2 border-b-[1px] border-gray-100 dark:border-gray-900">
                 <div
                     className="hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full"
                     onClick={() => {
@@ -191,7 +191,7 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
                     <FaXTwitter/>
                 </div>
             </div>
-            <div id="sidebarMenu" className="absolute shadow-lg sm:shadow-none h-screen sm:col-span-3 sm:ml-12 bg-white sm:relative transform -translate-x-full sm:-translate-x-0 transition-transform duration-300 cursor-pointer z-50">
+            <div id="sidebarMenu" className="absolute shadow-lg sm:shadow-none h-screen sm:col-span-3 sm:ml-12 bg-white dark:bg-black sm:relative transform -translate-x-full sm:-translate-x-0 transition-transform duration-300 cursor-pointer z-50">
                 <div>
                     <div className="text-3xl h-fit w-fit hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full p-2 ml-3 transition-all cursor-pointer" onClick={() => closeSidebar()}>
                         <Link href="/">
@@ -284,13 +284,13 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
                     </div>
                 }
             </div>
-            <div className="sm:hidden w-screen border-y-[1px] fixed bottom-0 bg-white z-40">
+            <div className="sm:hidden w-screen border-y-[1px] border-gray-100 dark:border-gray-700 fixed bottom-0 bg-white dark:bg-black z-40">
                 {user &&
                     <ul className="flex justify-around">
                         {bottombarMenuItems.map(item => (
                             <li key={crypto.randomUUID()}>
                                 <Link href={item.link}
-                                      className="block p-4 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full w-fit transition-all cursor-pointer disabled:opacity-50"
+                                      className="block p-4 rounded-full transition-all cursor-pointer disabled:opacity-50"
                                       aria-disabled={item.disabled}
                                 >
                                     <span className='text-2xl'>{item.icon}</span>
