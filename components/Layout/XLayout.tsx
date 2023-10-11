@@ -18,7 +18,8 @@ import {log} from "util";
 interface XSidebarButtons {
     title: String,
     icon: React.ReactNode,
-    link: string
+    link: string,
+    disabled: boolean
 }
 
 interface XLayoutProps {
@@ -32,74 +33,88 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
         {
             title: 'Home',
             icon: <RiHome7Fill/>,
-            link: '/'
+            link: '/',
+            disabled: true
         },
-        // {
-        //     title: 'Explore',
-        //     icon: <BsSearch />,
-        //     link: '/'
-        // },
-        // {
-        //     title: 'Notifications',
-        //     icon: <RiNotification3Line />,
-        //     link: '/'
-        // },
-        // {
-        //     title: 'Messages',
-        //     icon: <HiOutlineMail />,
-        //     link: '/'
-        // },
-        // {
-        //     title: 'Lists',
-        //     icon: <RiFileListLine />,
-        //     link: '/'
-        // },
-        // {
-        //     title: 'Bookmarks',
-        //     icon: <FiBookmark />,
-        //     link: '/'
-        // },
-        // {
-        //     title: 'Communities',
-        //     icon: <BsPeople />,
-        //     link: '/'
-        // },
-        // {
-        //     title: 'Verified',
-        //     icon: <FaXTwitter />,
-        //     link: '/'
-        // },
+        {
+            title: 'Explore',
+            icon: <BsSearch />,
+            link: '/',
+            disabled: true
+        },
+        {
+            title: 'Notifications',
+            icon: <RiNotification3Line />,
+            link: '/',
+            disabled: true
+        },
+        {
+            title: 'Messages',
+            icon: <HiOutlineMail />,
+            link: '/',
+            disabled: true
+        },
+        {
+            title: 'Lists',
+            icon: <RiFileListLine />,
+            link: '/',
+            disabled: true
+        },
+        {
+            title: 'Bookmarks',
+            icon: <FiBookmark />,
+            link: '/',
+            disabled: true
+        },
+        {
+            title: 'Communities',
+            icon: <BsPeople />,
+            link: '/',
+            disabled: true
+        },
+        {
+            title: 'Verified',
+            icon: <FaXTwitter />,
+            link: '/',
+            disabled: true
+        },
         {
             title: 'Profile',
             icon: <BsPerson/>,
-            link: `/${user?.id}`
+            link: `/${user?.id}`,
+            disabled: false
+        },
+        {
+            title: 'More',
+            icon: <CgMoreO />,
+            link: '/',
+            disabled: true
         }
-        // {
-        //     title: 'More',
-        //     icon: <CgMoreO />,
-        //     link: '/'
-        // }
     ], [user?.id]);
     const bottombarMenuItems: XSidebarButtons[] = useMemo(() => [
         {
             title: 'Home',
             icon: <RiHome7Fill/>,
-            link: '/'
+            link: '/',
+            disabled: false
         },
         {
             title: 'Search',
             icon: <FiSearch />,
-            link: '/'
+            link: '/',
+            disabled: true
         },
         {
             title: 'Notifications',
             icon: <RiNotification3Line />,
-            link: '/'
+            link: '/',
+            disabled: true
         },
         {
             title: 'Messages',
             icon: <HiOutlineMail />,
-            link: '/'
+            link: '/',
+            disabled: true
         },
     ], [])
     const profileMenu: HTMLElement = document.getElementById("profileMenu") as HTMLElement
@@ -123,17 +138,19 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
         [queryClient]
     );
 
+    // Function to show the sidebar
     function openSidebar() {
         sidebarMenu?.classList.remove('-translate-x-full');
         sidebarMenu.classList.add("shadow-lg")
     }
+
     // Function to close the sidebar
     function closeSidebar() {
         sidebarMenu?.classList.add('-translate-x-full');
-        sidebarMenu.classList.remove("shadow-lg")
+        sidebarMenu?.classList.remove("shadow-lg")
     }
 
-    const handleOnPageClick = (event: any) => {
+    const handleOnPageClick: (event: any) => void = (event: any) => {
         if (!sidebarMenu?.contains(event.target) && !topbarMenu?.contains(event.target)) {
             closeSidebar()
         }
@@ -145,7 +162,7 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
         return () => {
             document.removeEventListener('click', handleOnPageClick)
         }
-    }, [])
+    }, [handleOnPageClick])
 
     return <div>
         <div className="grid grid-cols-12 h-screen w-screen sm:px-56">
@@ -174,7 +191,7 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
                     <FaXTwitter/>
                 </div>
             </div>
-            <div id="sidebarMenu" className="absolute shadow-lg h-screen sm:col-span-3 sm:ml-12 bg-white sm:relative transform -translate-x-full sm:-translate-x-0 transition-transform duration-300 cursor-pointer">
+            <div id="sidebarMenu" className="absolute shadow-lg sm:shadow-none h-screen sm:col-span-3 sm:ml-12 bg-white sm:relative transform -translate-x-full sm:-translate-x-0 transition-transform duration-300 cursor-pointer">
                 <div>
                     <div
                         className="text-3xl h-fit w-fit hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full p-2 ml-3 transition-all cursor-pointer">
@@ -184,8 +201,11 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
                         <ul>
                             {sidebarMenuItems.map(item => (
                                 <li key={crypto.randomUUID()}>
-                                    <Link href={item.link}
-                                          className={`flex justify-start items-center gap-6 mt-3 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full py-2 px-5 w-fit transition-all cursor-pointer`}>
+                                    <Link
+                                        href={item.link}
+                                        className="flex justify-start items-center gap-6 mt-3 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full py-2 px-5 w-fit transition-all cursor-pointer"
+                                        aria-disabled={item.disabled}
+                                    >
                                         <span className='text-2xl'>{item.icon}</span>
                                         <span>{item.title}</span>
                                     </Link>
@@ -194,7 +214,7 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
                         </ul>
                         <div className="mt-5 ml-5">
                             <button
-                                className="bg-[#1d9bf0] p-3 text-xl text-white font-semibold w-full rounded-full disabled:opacity-50"
+                                className="bg-[#1d9bf0] p-3 text-xl text-white font-semibold w-full rounded-full"
                                 disabled={true}
                             >
                                 Post
@@ -269,10 +289,10 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
                         {bottombarMenuItems.map(item => (
                             <li key={crypto.randomUUID()} className="p-2 px-4">
                                 <Link href={item.link}
-                                      className="mt-3 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full w-fit transition-all cursor-pointer"
+                                      className="mt-3 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full w-fit transition-all cursor-pointer disabled:opacity-50"
+                                      aria-disabled={item.disabled}
                                 >
                                     <span className='text-2xl'>{item.icon}</span>
-                                    <span className="hidden sm:block">{item.title}</span>
                                 </Link>
                             </li>
                         ))}
