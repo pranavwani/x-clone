@@ -283,11 +283,11 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
                     </div>
                 }
             </div>
-            <div className="sm:hidden w-screen border-y-[1px]">
+            <div className="sm:hidden w-screen border-y-[1px] fixed bottom-0 bg-white">
                 {user &&
                     <ul className="flex justify-around">
                         {bottombarMenuItems.map(item => (
-                            <li key={crypto.randomUUID()} className="p-2 px-4">
+                            <li key={crypto.randomUUID()} className="pt-4 pb-4">
                                 <Link href={item.link}
                                       className="mt-3 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full w-fit transition-all cursor-pointer disabled:opacity-50"
                                       aria-disabled={item.disabled}
