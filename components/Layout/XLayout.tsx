@@ -14,7 +14,7 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
     const {user} = useCurrentUser()
 
     return <div>
-        <div className="sm:grid grid-cols-12 h-screen w-screen sm:px-56">
+        <div className="grid grid-cols-12 h-screen w-screen sm:px-56">
             <HeaderMenu user={user as User} />
             <SidebarMenu user={user as User} />
             <div
