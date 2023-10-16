@@ -40,6 +40,16 @@ export const getUserByID = graphql(`
         email
         profileImageUrl
         createdAt
+        following {
+          firstName
+          lastName
+          id
+        }
+        followers {
+          firstName
+          lastName
+          id
+        }
         posts {
           id
           content

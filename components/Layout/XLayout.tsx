@@ -15,10 +15,9 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
 
     return <div>
         <div className="grid grid-cols-12 h-screen w-screen sm:px-56">
-            <HeaderMenu user={user as User} />
             <SidebarMenu user={user as User} />
             <div
-                className="col-span-12 sm:col-span-5 border-l-[1px] border-r-[1px] height-screen overflow-scroll border-gray-100 dark:border-gray-700">
+                className="col-span-12 sm:col-span-5 sm:border-l-[1px] sm:border-r-[1px] height-screen overflow-scroll border-gray-100 dark:border-gray-700">
                 {props.children}
             </div>
             <div className="hidden sm:col-span-3 sm:block p-5 border-gray-100 dark:border-gray-700">
