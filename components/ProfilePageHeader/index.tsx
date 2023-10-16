@@ -66,7 +66,7 @@ const ProfilePageHeader: React.FC<ProfilePageHeaderProps> = ({user}) => {
                 </div>
                 {
                     currentUser.user?.id !== user.id && <div
-                        className="float-right bg-black text-white rounded-full px-5 py-2 font-semibold text-sm mr-4 mt-3">
+                        className="float-right bg-black text-white dark:bg-white dark:text-black rounded-full px-5 py-2 font-semibold text-sm mr-4 mt-3">
                         {isFollowing ? <button onClick={handleUnfollowUser}>Unfollow</button> :
                             <button onClick={handleFollowUser}>Follow</button>}
                     </div>
