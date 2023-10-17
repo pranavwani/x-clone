@@ -17,7 +17,7 @@ const HeaderMenu: React.FC<HeaderMenuProps> = ({ user }) => {
         sidebarMenu.classList.add("shadow-lg")
     }
 
-    return <div id="topbarMenu" className="sm:hidden flex w-screen p-2 border-b-[1px] border-gray-100 dark:border-gray-900">
+    return <div id="topbarMenu" className="sm:hidden flex w-screen p-4">
         <div
             className="hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full"
             onClick={() => {

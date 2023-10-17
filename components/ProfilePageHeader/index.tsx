@@ -29,7 +29,7 @@ const ProfilePageHeader: React.FC<ProfilePageHeaderProps> = ({user}) => {
 
     const handleReload = useCallback(() => {
         return router.push(`/${user.id}?forceReload=true`)
-    }, [user])
+    }, [router, user.id])
 
     const handleFollowUser = useCallback(async () => {
         await graphqlClient.request(followUserMutation, {followingId: user.id})
