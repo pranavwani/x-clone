@@ -37,7 +37,7 @@ const HeaderMenu: React.FC<HeaderMenuProps> = ({ user }) => {
             }
         </div>
         <div
-            className="absolute right-[50%] text-2xl hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full transition-all cursor-pointer"
+            className="ml-[40%] text-2xl hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full transition-all cursor-pointer"
         >
             <FaXTwitter/>
         </div>

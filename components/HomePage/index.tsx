@@ -24,14 +24,12 @@ const HomePage: React.FC<HomePageProps> = ({user}) => {
         } else setFilteredPosts(posts);
     }, [typeOfPosts, user.following, posts])
 
-    return <div>
+    return <XLayout>
         <HeaderMenu user={user as User}/>
-        <XLayout>
-            <HomePageHeder typeOfPosts={typeOfPosts} setTypeOfPosts={setTypeOfPosts}/>
-            <CreatePost user={user as User}/>
-            <Posts posts={filteredPosts as Post[]}/>
-        </XLayout>
-    </div>
+        <HomePageHeder typeOfPosts={typeOfPosts} setTypeOfPosts={setTypeOfPosts}/>
+        <CreatePost user={user as User}/>
+        <Posts posts={filteredPosts as Post[]}/>
+    </XLayout>
 }
 
 export default HomePage
