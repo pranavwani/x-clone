@@ -27,7 +27,7 @@ const FeedCard: React.FC<FeedCardProps> = (props) => {
           />}
         </div>
         <div className="col-span-11 pl-1 pb-2">
-          <h4 className="font-semibold">
+          <h4 className="font-semibold hover:underline">
             <Link href={`${data?.author?.id}`}>
               {data.author?.firstName} {data.author?.lastName}
             </Link>
