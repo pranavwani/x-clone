@@ -10,7 +10,7 @@ import FollowBtn from "@/components/FollowBtn";
 import TabLayout from "@/components/Layout/TabLayout";
 import Link from "next/link";
 import ProfilePageNav from "../../components/NavBar";
-import tabs from "@/pages/[id]/tabs";
+import tabs from "@/utils/tabs";
 
 interface ServerProps {
     following: [User]
