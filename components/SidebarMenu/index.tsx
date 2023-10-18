@@ -3,86 +3,16 @@ import Link from "next/link";
 import {FaXTwitter} from "react-icons/fa6";
 import Image from "next/image";
 import {User} from "@/gql/graphql";
-import {RiFileListLine, RiHome7Fill, RiNotification3Line} from "react-icons/ri";
-import {BsPeople, BsPerson, BsSearch} from "react-icons/bs";
-import {HiOutlineMail} from "react-icons/hi";
-import {FiBookmark} from "react-icons/fi";
-import {CgMoreO} from "react-icons/cg";
-
-interface XSidebarButtons {
-    title: String,
-    icon: React.ReactNode,
-    link: string,
-    disabled: boolean
-}
+import sidebarMenuItems, {XSidebarButtons} from "@/utils/sidebarMenuItems";
 
 interface SidebarMenuProps {
     user: User
 }
 
 const SidebarMenu: React.FC<SidebarMenuProps> = ({ user }) => {
-    const sidebarMenuItems: XSidebarButtons[] = useMemo(() => [
-        {
-            title: 'Home',
-            icon: <RiHome7Fill/>,
-            link: '/',
-            disabled: true
-        },
-        {
-            title: 'Explore',
-            icon: <BsSearch />,
-            link: '/',
-            disabled: true
-        },
-        {
-            title: 'Notifications',
-            icon: <RiNotification3Line />,
-            link: '/',
-            disabled: true
-        },
-        {
-            title: 'Messages',
-            icon: <HiOutlineMail />,
-            link: '/',
-            disabled: true
-        },
-        {
-            title: 'Lists',
-            icon: <RiFileListLine />,
-            link: '/',
-            disabled: true
-        },
-        {
-            title: 'Bookmarks',
-            icon: <FiBookmark />,
-            link: '/',
-            disabled: true
-        },
-        {
-            title: 'Communities',
-            icon: <BsPeople />,
-            link: '/',
-            disabled: true
-        },
-        {
-            title: 'Verified',
-            icon: <FaXTwitter />,
-            link: '/',
-            disabled: true
-        },
-        {
-            title: 'Profile',
-            icon: <BsPerson/>,
-            link: `/${user?.id}`,
-            disabled: false
-        },
-        {
-            title: 'More',
-            icon: <CgMoreO />,
-            link: '/',
-            disabled: true
-        }
-    ], [user?.id]);
+    const _sidebarMenuItems: XSidebarButtons[] = useMemo(() => {
+        return sidebarMenuItems(user);
+    }, [user]);
 
     // Function to close the sidebar
     const closeSidebar = useCallback(() => {
@@ -118,7 +48,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ user }) => {
             </div>
             {user && <div className="mt-4 text-xl pr-12">
                 <ul>
-                    {sidebarMenuItems.map(item => (
+                    {_sidebarMenuItems.map(item => (
                         <li key={crypto.randomUUID()}>
                             <Link
                                 href={item.link}

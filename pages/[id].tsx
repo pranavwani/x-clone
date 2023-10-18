@@ -4,7 +4,7 @@ import {Post, User} from "@/gql/graphql";
 import {graphqlClient} from "@/clients/api";
 import {getUserByID} from "@/graphql/query/user";
 import ProfilePageHeader from "@/components/ProfilePageHeader";
-import ProfilePageNav from "../components/NavBar";
+import NavBar from "@/components/NavBar";
 import Posts from "@/components/Posts";
 
 interface ServerProps {
@@ -15,7 +15,7 @@ const UserProfilePage: NextPage<ServerProps> = (props) => {
     const {user} = props
 
     return <XLayout>
-        <ProfilePageNav route={"/"} subTitle={`${user?.posts?.length} Posts`} title={`${user?.firstName} ${user?.lastName}`}/>
+        <NavBar route={"/"} subTitle={`${user?.posts?.length} Posts`} title={`${user?.firstName} ${user?.lastName}`}/>
         <ProfilePageHeader user={user as User}/>
         <Posts posts={user?.posts as Post[]}/>
     </XLayout>

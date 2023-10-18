@@ -45,7 +45,7 @@ const UserFollowingPage: NextPage<ServerProps> = (props) => {
                     </div>
                     <div className="mr-3">
                         {following?.id !== loggedInUser?.id && <FollowBtn
-                            user={user as User}
+                            user={loggedInUser as User}
                             followingId={following?.id as string}
                             route={`/${user.id}/following`}
                         />}
