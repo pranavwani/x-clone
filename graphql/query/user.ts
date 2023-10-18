@@ -80,3 +80,22 @@ export const getUserByID = graphql(`
       }
     }
 `)
+
+export const getUserRelations = graphql(`#graphql
+    query GetUserRelations($getUserRelationsId: ID!) {
+      getUserRelations(id: $getUserRelationsId) {
+        followers {
+          firstName
+          lastName
+          id
+          profileImageUrl
+        }
+        following {
+          firstName
+          lastName
+          id
+          profileImageUrl
+        }
+      }
+    }
+`)

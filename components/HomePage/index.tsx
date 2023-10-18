@@ -5,28 +5,43 @@ import XLayout from "@/components/Layout/XLayout";
 import {useGetAllPosts} from "@/hooks/post";
 import Posts from "@/components/Posts";
 import HeaderMenu from "@/components/HeaderMenu";
-import HomePageHeder from "@/components/HomePageHeader";
+import TabLayout from "@/components/Layout/TabLayout";
 
 interface HomePageProps {
     user: User
 }
 
+const tabs = [
+    {
+        title: "For you",
+        id: "for-you"
+    },
+    {
+        title: "Following",
+        id: "following"
+    }
+]
+
 const HomePage: React.FC<HomePageProps> = ({user}) => {
     const {posts = []} = useGetAllPosts()
-    const [typeOfPosts, setTypeOfPosts] = useState(0)
+    const [activeTab, setActive] = useState(tabs[0].id)
     const [filteredPosts, setFilteredPosts] = useState(posts)
 
     useEffect(() => {
-        if (typeOfPosts) {
+        if (activeTab === tabs[1].id) {
             const followingPosts = posts?.filter((post) => user.following?.some((following) => following?.id === post?.author?.id));
 
             setFilteredPosts(followingPosts || []);
         } else setFilteredPosts(posts);
-    }, [typeOfPosts, user.following, posts])
+    }, [user.following, posts, activeTab])
 
     return <XLayout>
         <HeaderMenu user={user as User}/>
-        <HomePageHeder typeOfPosts={typeOfPosts} setTypeOfPosts={setTypeOfPosts}/>
+        <TabLayout tabs={tabs} activeTab={activeTab} setActive={setActive}>
+            <div className="hidden sm:block text-xl font-semibold pl-4 pt-3 my-2 w-full">
+                <span>Home</span>
+            </div>
+        </TabLayout>
         <CreatePost user={user as User}/>
         <Posts posts={filteredPosts as Post[]}/>
     </XLayout>

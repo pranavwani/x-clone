@@ -159,7 +159,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ user }) => {
                         </button>
                     </div>
                     <div
-                        className="flex gap-2 w-fit hover:bg-gray-200 dark:hover:bg-gray-900 p-3 rounded-full"
+                        className="flex gap-2 items-center w-fit hover:bg-gray-200 dark:hover:bg-gray-900 p-3 rounded-full"
                         onClick={() => {
                             const profileMenu= document.getElementById("profileMenu") as HTMLElement
 

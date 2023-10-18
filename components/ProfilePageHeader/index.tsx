@@ -3,10 +3,8 @@ import Image from 'next/image';
 import {MdOutlineDateRange} from 'react-icons/md';
 import {User} from '@/gql/graphql';
 import {useCurrentUser} from "@/hooks/user";
-import {graphqlClient} from "@/clients/api";
-import {followUserMutation, unfollowUserMutation} from "@/graphql/mutation/user";
-import {useQueryClient} from "@tanstack/react-query";
-import {useRouter} from "next/router";
+import Link from "next/link";
+import FollowBtn from "@/components/FollowBtn";
 
 interface ProfilePageHeaderProps {
     user: User;
@@ -14,38 +12,10 @@ interface ProfilePageHeaderProps {
 
 const ProfilePageHeader: React.FC<ProfilePageHeaderProps> = ({user}) => {
     const createdAt = new Date(Number(user?.createdAt));
-    const currentUser = useCurrentUser()
-    const queryClient = useQueryClient()
-    const router = useRouter()
+    const {user: loggedInUser} = useCurrentUser()
     const joinedAtString = `${createdAt.toLocaleString('default', {
         month: 'long',
     })} ${createdAt.getFullYear()}`;
-
-    const isFollowing = useMemo(() => {
-        if (!currentUser || !currentUser.user) return false
-
-        return !(currentUser.user?.following?.findIndex(following => following?.id === user.id) === -1);
-    }, [currentUser, user.id])
-
-    const handleReload = useCallback(() => {
-        return router.push(`/${user.id}?forceReload=true`)
-    }, [router, user.id])
-
-    const handleFollowUser = useCallback(async () => {
-        await graphqlClient.request(followUserMutation, {followingId: user.id})
-
-        await queryClient.invalidateQueries(["current-user"])
-
-        await handleReload()
-    }, [handleReload, queryClient, user.id])
-
-    const handleUnfollowUser =  useCallback(async () => {
-        await graphqlClient.request(unfollowUserMutation, {followingId: user.id})
-
-        await queryClient.invalidateQueries(["current-user"])
-
-        await handleReload()
-    }, [handleReload, queryClient, user.id])
 
     return (
         <div>
@@ -64,13 +34,12 @@ const ProfilePageHeader: React.FC<ProfilePageHeaderProps> = ({user}) => {
                         />
                     )}
                 </div>
-                {
-                    currentUser.user?.id !== user.id && <div
-                        className="float-right bg-black text-white dark:bg-white dark:text-black rounded-full px-5 py-2 font-semibold text-sm mr-4 mt-3">
-                        {isFollowing ? <button onClick={handleUnfollowUser}>Unfollow</button> :
-                            <button onClick={handleFollowUser}>Follow</button>}
-                    </div>
-                }
+                <div className="mt-4 mr-3">
+                    {
+                        loggedInUser?.id !== user.id &&
+                        <FollowBtn followingId={user.id} user={loggedInUser as User} route={`/${user.id}`}/>
+                    }
+                </div>
             </div>
             <div className="p-4 mt-5 sm:mt-10 bg-white dark:bg-black">
                 <div className="mt-5">
@@ -83,17 +52,17 @@ const ProfilePageHeader: React.FC<ProfilePageHeaderProps> = ({user}) => {
                     <span>Joined {joinedAtString}</span>
                 </div>
                 <div className="flex items-center gap-5 mt-2 text-sm text-gray-700 dark:text-gray-500">
-                    <div className="flex gap-1">
-            <span className="text-black dark:text-white font-semibold">
-              {user.following?.length}
-            </span>
-                        <span>Following</span>
+                    <div className="flex hover:underline cursor-pointer">
+                        <Link href={`${user.id}/following`}>
+                            <span className="text-black dark:text-white font-semibold">{user.following?.length}</span>
+                            <span>&nbsp;Following</span>
+                        </Link>
                     </div>
-                    <div className="flex gap-1">
-            <span className="text-black dark:text-white font-semibold">
-              {user.followers?.length}
-            </span>
-                        <span>Followers</span>
+                    <div className="flex hover:underline cursor-pointer">
+                        <Link href={`${user.id}/followers`}>
+                            <span className="text-black dark:text-white font-semibold">{user.followers?.length}</span>
+                            <span>&nbsp;Followers</span>
+                        </Link>
                     </div>
                 </div>
             </div>
