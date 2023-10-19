@@ -53,13 +53,13 @@ const ProfilePageHeader: React.FC<ProfilePageHeaderProps> = ({user}) => {
                 </div>
                 <div className="flex items-center gap-5 mt-2 text-sm text-gray-700 dark:text-gray-500">
                     <div className="flex hover:underline cursor-pointer">
-                        <Link href={`${user.id}/following`}>
+                        <Link href={loggedInUser ? `${user.id}/following` : "/"}>
                             <span className="text-black dark:text-white font-semibold">{user.following?.length}</span>
                             <span>&nbsp;Following</span>
                         </Link>
                     </div>
                     <div className="flex hover:underline cursor-pointer">
-                        <Link href={`${user.id}/followers`}>
+                        <Link href={loggedInUser ? `${user.id}/followers` : "/"}>
                             <span className="text-black dark:text-white font-semibold">{user.followers?.length}</span>
                             <span>&nbsp;Followers</span>
                         </Link>

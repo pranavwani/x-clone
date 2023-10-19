@@ -8,15 +8,16 @@ import {getSignedURLForPostQuery} from "@/graphql/query/post";
 import toast from "react-hot-toast";
 import axios from "axios";
 import {useCreatePost} from "@/hooks/post";
+import Link from "next/link";
 
 interface CreatePostProps {
     user: User
 }
 
-const CreatePost: React.FC<CreatePostProps> = ({ user }) => {
+const CreatePost: React.FC<CreatePostProps> = ({user}) => {
     const [content, setContent] = useState('')
     const [imageURL, setImageURL] = useState('')
-    const { mutate } = useCreatePost()
+    const {mutate} = useCreatePost()
     const isNewPostButtonDisabled = content.length === 0;
 
     const handleInputChangeFile = useCallback((input: HTMLInputElement) => {
@@ -27,13 +28,13 @@ const CreatePost: React.FC<CreatePostProps> = ({ user }) => {
 
             if (!file) return;
 
-            const { getSignedURLForPost} = await graphqlClient.request(getSignedURLForPostQuery, {
+            const {getSignedURLForPost} = await graphqlClient.request(getSignedURLForPostQuery, {
                 imageName: file.name,
                 imageType: file.type
             })
 
             if (getSignedURLForPost) {
-                toast.loading("Uploading...", { id: "2" });
+                toast.loading("Uploading...", {id: "2"});
 
                 await axios.put(getSignedURLForPost, file, {
                     headers: {
@@ -41,7 +42,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ user }) => {
                     }
                 })
 
-                toast.success("Upload Completed", { id: "2" });
+                toast.success("Upload Completed", {id: "2"});
 
                 const url = new URL(getSignedURLForPost)
 
@@ -73,16 +74,18 @@ const CreatePost: React.FC<CreatePostProps> = ({ user }) => {
     return <div className="p-4">
         <div className="grid grid-cols-12 gap-2">
             <div className="col-span-1 cursor-pointer">
-                {
-                    user?.profileImageUrl &&
-                    <Image
-                        src={user?.profileImageUrl}
-                        alt="user-image"
-                        height={50}
-                        width={50}
-                        className="rounded-full"
-                    />
-                }
+                <Link href={`/${user?.id}`}>
+                    {
+                        user?.profileImageUrl &&
+                        <Image
+                            src={user?.profileImageUrl}
+                            alt="user-image"
+                            height={50}
+                            width={50}
+                            className="rounded-full"
+                        />
+                    }
+                </Link>
             </div>
             <div className="col-span-11">
                 <textarea
@@ -110,4 +113,4 @@ const CreatePost: React.FC<CreatePostProps> = ({ user }) => {
     </div>
 }
 
-export  default  CreatePost
+export default CreatePost

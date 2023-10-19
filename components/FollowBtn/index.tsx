@@ -26,20 +26,24 @@ const FollowsBtn: React.FC<FollowBtnProps> = ({ user, followingId, route }) => {
     }, [router, route])
 
     const handleFollowUser = useCallback(async () => {
+        if (!user) return false
+
         await graphqlClient.request(followUserMutation, {followingId })
 
         await queryClient.invalidateQueries(["current-user"])
 
         await handleReload()
-    }, [handleReload, queryClient, followingId])
+    }, [user, followingId, queryClient, handleReload])
 
     const handleUnfollowUser = useCallback(async () => {
+        if (!user) return false
+
         await graphqlClient.request(unfollowUserMutation, {followingId})
 
         await queryClient.invalidateQueries(["current-user"])
 
         await handleReload()
-    }, [handleReload, queryClient, followingId])
+    }, [user, followingId, queryClient, handleReload])
 
     return <div
         className="float-right bg-black text-white dark:bg-white dark:text-black rounded-full font-semibold text-sm px-5 py-2">
