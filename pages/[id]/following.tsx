@@ -1,7 +1,6 @@
 import {GetServerSideProps, NextPage} from "next";
 import {graphqlClient} from "@/clients/api";
-import {getCurrentUserQuery, getUserByID, getUserRelations} from "@/graphql/query/user";
-import {useCurrentUser} from "@/hooks/user";
+import {getUserByID, getUserRelations} from "@/graphql/query/user";
 import {User} from "@/gql/graphql";
 import XLayout from "@/components/Layout/XLayout";
 import Image from "next/image";
@@ -11,6 +10,8 @@ import TabLayout from "@/components/Layout/TabLayout";
 import Link from "next/link";
 import ProfilePageNav from "../../components/NavBar";
 import tabs from "@/utils/tabs";
+import {useRecoilValue} from "recoil";
+import {userState} from "@/store/atoms/user";
 
 interface ServerProps {
     following: [User]
@@ -20,7 +21,7 @@ interface ServerProps {
 const UserFollowingPage: NextPage<ServerProps> = (props) => {
     const {following, user} = props
     const tabLayoutTabs = useMemo(() => tabs(user), [user])
-    const {user: loggedInUser} = useCurrentUser()
+    const loggedInUser = useRecoilValue(userState)
 
     return <XLayout>
         <TabLayout tabs={tabLayoutTabs} activeTab={tabLayoutTabs[1].id}>

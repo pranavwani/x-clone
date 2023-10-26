@@ -1,10 +1,11 @@
-import React, {useCallback, useMemo} from 'react';
+import React from 'react';
 import Image from 'next/image';
 import {MdOutlineDateRange} from 'react-icons/md';
 import {User} from '@/gql/graphql';
-import {useCurrentUser} from "@/hooks/user";
 import Link from "next/link";
 import FollowBtn from "@/components/FollowBtn";
+import {useRecoilValue} from "recoil";
+import {userState} from "@/store/atoms/user";
 
 interface ProfilePageHeaderProps {
     user: User;
@@ -12,7 +13,7 @@ interface ProfilePageHeaderProps {
 
 const ProfilePageHeader: React.FC<ProfilePageHeaderProps> = ({user}) => {
     const createdAt = new Date(Number(user?.createdAt));
-    const {user: loggedInUser} = useCurrentUser()
+    const loggedInUser = useRecoilValue(userState)
     const joinedAtString = `${createdAt.toLocaleString('default', {
         month: 'long',
     })} ${createdAt.getFullYear()}`;

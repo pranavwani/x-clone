@@ -16,7 +16,7 @@ const FeedCard: React.FC<FeedCardProps> = (props) => {
 
     return (
         <div
-            className="border-t border-inherit p-2 hover:bg-gray-100 dark:hover:bg-gray-900 transition-all cursor-pointer">
+            className="border-t border-inherit pr-2 pl-4 pt-3 pb-0 hover:bg-gray-100 dark:hover:bg-gray-900 transition-all cursor-pointer">
             <div className="grid grid-cols-12 gap-2">
                 <div className="col-span-1">
                     <Link href={`/${data?.author?.id}`}>
@@ -29,7 +29,7 @@ const FeedCard: React.FC<FeedCardProps> = (props) => {
                         />}
                     </Link>
                 </div>
-                <div className="col-span-11 pl-1 pb-2">
+                <div className="col-span-11 pl-1 pb-1">
                     <h4 className="font-semibold hover:underline">
                         <Link href={`/${data?.author?.id}`}>
                             {data.author?.firstName} {data.author?.lastName}
@@ -37,14 +37,14 @@ const FeedCard: React.FC<FeedCardProps> = (props) => {
                     </h4>
                     <p className='text-sm'>{data.content}</p>
                     {data.imageURL && <Image src={data.imageURL} alt='post-iamge' height={300} width={300}/>}
-                    <div className='flex justify-between text-gray-600 pr-3 mt-[12px] items-center text-lg'>
-                        <div>
+                    <div className='flex justify-between text-gray-600 pr-3 mt-[12px] items-center text-xl'>
+                        <div className='hover:bg-blue-950 rounded-full p-2 hover:text-[#1d9bf0]'>
                             <BiMessageRounded/>
                         </div>
-                        <div>
+                        <div className='hover:bg-[#1b2e16] rounded-full p-2 hover:text-[#40a327]'>
                             <FaRetweet/>
                         </div>
-                        <div>
+                        <div className='hover:bg-[#290113] rounded-full p-2 hover:text-[#f91880]'>
                             <AiOutlineHeart/>
                         </div>
                         <div>

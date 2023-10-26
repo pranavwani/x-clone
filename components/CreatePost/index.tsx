@@ -1,7 +1,6 @@
 import Image from "next/image";
 import {GoFileMedia} from "react-icons/go";
 import {BsEmojiSmile} from "react-icons/bs";
-import {User} from "@/gql/graphql";
 import {useCallback, useState} from "react";
 import {graphqlClient} from "@/clients/api";
 import {getSignedURLForPostQuery} from "@/graphql/query/post";
@@ -9,15 +8,14 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import {useCreatePost} from "@/hooks/post";
 import Link from "next/link";
+import {useRecoilValue} from "recoil";
+import {userState} from "@/store/atoms/user";
 
-interface CreatePostProps {
-    user: User
-}
-
-const CreatePost: React.FC<CreatePostProps> = ({user}) => {
+const CreatePost: React.FC = () => {
     const [content, setContent] = useState('')
     const [imageURL, setImageURL] = useState('')
     const {mutate} = useCreatePost()
+    const user = useRecoilValue(userState)
     const isNewPostButtonDisabled = content.length === 0;
 
     const handleInputChangeFile = useCallback((input: HTMLInputElement) => {

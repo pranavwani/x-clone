@@ -22,3 +22,31 @@ export const getSignedURLForPostQuery = graphql(`
       getSignedURLForPost(imageName: $imageName, imageType: $imageType)
     }
 `)
+
+export const getPostByIDQuery = graphql(`
+    #graphql
+    query getPostByID($getPostByIdId: ID!) {
+      getPostByID(id: $getPostByIdId) {
+        id
+        content
+        imageURL
+        author {
+          firstName
+          lastName
+          profileImageUrl
+          id
+        }
+        replies {
+          id
+          content
+          imageURL
+          author {        
+            firstName
+            lastName
+            profileImageUrl
+            id
+          }
+        }
+      }
+    }
+`)

@@ -2,29 +2,27 @@ import React, {useCallback, useEffect, useMemo} from "react";
 import Link from "next/link";
 import {FaXTwitter} from "react-icons/fa6";
 import Image from "next/image";
-import {User} from "@/gql/graphql";
 import sidebarMenuItems, {XSidebarButtons} from "@/utils/sidebarMenuItems";
+import {useRecoilValue} from "recoil";
+import {userState} from "@/store/atoms/user";
 
-interface SidebarMenuProps {
-    user: User
-}
-
-const SidebarMenu: React.FC<SidebarMenuProps> = ({ user }) => {
+const SidebarMenu: React.FC = () => {
+    const user = useRecoilValue(userState)
     const _sidebarMenuItems: XSidebarButtons[] = useMemo(() => {
         return sidebarMenuItems(user);
     }, [user]);
 
     // Function to close the sidebar
     const closeSidebar = useCallback(() => {
-        const sidebarMenu= document.getElementById("sidebarMenu") as HTMLElement
+        const sidebarMenu = document.getElementById("sidebarMenu") as HTMLElement
 
         sidebarMenu?.classList.add('-translate-x-full');
         sidebarMenu?.classList.remove("shadow-lg")
     }, []);
 
     const handleOnPageClick: (event: any) => void = useCallback((event: any) => {
-        const sidebarMenu= document.getElementById("sidebarMenu") as HTMLElement
-        const topbarMenu= document.getElementById("topbarMenu") as HTMLElement
+        const sidebarMenu = document.getElementById("sidebarMenu") as HTMLElement
+        const topbarMenu = document.getElementById("topbarMenu") as HTMLElement
 
         if (!sidebarMenu?.contains(event.target) && !topbarMenu?.contains(event.target)) {
             closeSidebar()
@@ -39,9 +37,12 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ user }) => {
         }
     }, [handleOnPageClick])
 
-    return <div id="sidebarMenu" className="absolute shadow-lg sm:shadow-none h-screen sm:col-span-3 sm:ml-12 bg-white dark:bg-black sm:relative transform -translate-x-full sm:-translate-x-0 transition-transform duration-300 cursor-pointer z-50">
+    return <div id="sidebarMenu"
+                className="absolute shadow-lg sm:shadow-none h-screen sm:col-span-3 sm:ml-12 bg-white dark:bg-black sm:relative transform -translate-x-full sm:-translate-x-0 transition-transform duration-300 cursor-pointer z-50">
         <div>
-            <div className="text-3xl h-fit w-fit hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full p-2 ml-3 transition-all cursor-pointer" onClick={() => closeSidebar()}>
+            <div
+                className="text-3xl h-fit w-fit hover:bg-gray-200 dark:hover:bg-gray-900 rounded-full p-2 ml-3 transition-all cursor-pointer"
+                onClick={() => closeSidebar()}>
                 <Link href="/">
                     <FaXTwitter/>
                 </Link>
@@ -91,7 +92,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ user }) => {
                     <div
                         className="flex gap-2 items-center w-fit hover:bg-gray-200 dark:hover:bg-gray-900 p-3 rounded-full"
                         onClick={() => {
-                            const profileMenu= document.getElementById("profileMenu") as HTMLElement
+                            const profileMenu = document.getElementById("profileMenu") as HTMLElement
 
                             profileMenu.style.display = profileMenu?.style.display === "block" ? "none" : "block"
                         }}
@@ -117,4 +118,4 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ user }) => {
     </div>
 }
 
-export  default  SidebarMenu
+export default SidebarMenu

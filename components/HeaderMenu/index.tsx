@@ -1,17 +1,15 @@
 import React from "react";
 import Image from "next/image";
 import {FaXTwitter} from "react-icons/fa6";
-import {User} from "@/gql/graphql";
+import {useRecoilValue} from "recoil";
+import {userState} from "@/store/atoms/user";
 
-interface HeaderMenuProps {
-    user: User
-}
-
-const HeaderMenu: React.FC<HeaderMenuProps> = ({ user }) => {
+const HeaderMenu: React.FC = () => {
+    const user = useRecoilValue(userState)
 
     // Function to show the sidebar
     function openSidebar() {
-        const sidebarMenu= document.getElementById("sidebarMenu") as HTMLElement
+        const sidebarMenu = document.getElementById("sidebarMenu") as HTMLElement
 
         sidebarMenu?.classList.remove('-translate-x-full');
         sidebarMenu.classList.add("shadow-lg")

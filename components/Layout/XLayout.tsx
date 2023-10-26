@@ -1,32 +1,31 @@
 import React, {useCallback} from "react";
-import {useCurrentUser} from "@/hooks/user";
 import {LoginWithGoogle} from "@/components/LoginWithGoogle";
 import SidebarMenu from "@/components/SidebarMenu";
-import {User} from "@/gql/graphql";
 import FooterMenu from "@/components/FooterMenu";
-import HeaderMenu from "@/components/HeaderMenu";
 import Image from "next/image";
 import {graphqlClient} from "@/clients/api";
 import {followUserMutation} from "@/graphql/mutation/user";
 import {useQueryClient} from "@tanstack/react-query";
+import {useRecoilValue} from "recoil";
+import {userState} from "@/store/atoms/user";
 
 interface XLayoutProps {
     children: React.ReactNode
 }
 
 const XLayout: React.FC<XLayoutProps> = (props) => {
-    const {user} = useCurrentUser()
+    const user = useRecoilValue(userState)
     const queryClient = useQueryClient()
 
     const handleFollow = useCallback(async (followingId: string) => {
         await graphqlClient.request(followUserMutation, {followingId})
 
         await queryClient.invalidateQueries(["current-user"])
-    }, [])
+    }, [queryClient])
 
     return <div>
         <div className="grid grid-cols-12 h-screen w-screen sm:px-56">
-            <SidebarMenu user={user as User}/>
+            <SidebarMenu />
             <div
                 className="col-span-12 sm:col-span-5 sm:border-l-[1px] sm:border-r-[1px] height-screen overflow-scroll border-gray-100 dark:border-gray-700 mb-[58px] sm:mb-0">
                 {props.children}
