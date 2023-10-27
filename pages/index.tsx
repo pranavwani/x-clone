@@ -19,8 +19,6 @@ export default function Home() {
         }
 
         if (user?.id && user?.email) setUser(user as User)
-
-
     }, [fetchStatus, refetch, setUser, user]);
 
 

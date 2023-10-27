@@ -41,7 +41,7 @@ const HomePage: React.FC = () => {
                 <span>Home</span>
             </div>
         </TabLayout>
-        <CreatePost/>
+        <CreatePost type={0}/>
         <Posts posts={filteredPosts as Post[]}/>
     </XLayout>
 }

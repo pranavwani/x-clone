@@ -11,7 +11,17 @@ import Link from "next/link";
 import {useRecoilValue} from "recoil";
 import {userState} from "@/store/atoms/user";
 
-const CreatePost: React.FC = () => {
+enum CreatePostType {
+    create ,
+    reply
+}
+
+interface CreatePostProps {
+    type?: CreatePostType
+    parentPostID?: string
+}
+
+const CreatePost: React.FC<CreatePostProps> = ({ type, parentPostID }) => {
     const [content, setContent] = useState('')
     const [imageURL, setImageURL] = useState('')
     const {mutate} = useCreatePost()
@@ -60,16 +70,20 @@ const CreatePost: React.FC = () => {
     }, [handleInputChangeFile])
 
     const handleCreatePost = useCallback(async () => {
-        mutate({
+        const newPost: any = {
             content,
             imageURL
-        })
+        }
+
+        if (parentPostID) newPost.parentPostID = parentPostID
+
+        mutate(newPost)
 
         setContent('')
         setImageURL('')
-    }, [content, imageURL, mutate])
+    }, [content, imageURL, mutate, parentPostID])
 
-    return <div className="p-4">
+    return <div className={`${type === CreatePostType.create ? 'pr-2 pl-4 pt-3' : 'pr-2 pt-4'} pb-2 dark:bg-black`}>
         <div className="grid grid-cols-12 gap-2">
             <div className="col-span-1 cursor-pointer">
                 <Link href={`/${user?.id}`}>
@@ -91,7 +105,7 @@ const CreatePost: React.FC = () => {
                     onChange={(event) => setContent(event.target.value)}
                     className="w-full resize-none text-xl px-3 placeholder-gray-500 border-b border-gray-100 dark:border-gray-700"
                     rows={4}
-                    placeholder="What is happening?!"
+                    placeholder={type === CreatePostType.create ? "What is happening?!" : "Post your reply" }
                 />
                 {
                     imageURL && <Image src={imageURL} alt="post-image" height={300} width={300}/>
@@ -100,9 +114,12 @@ const CreatePost: React.FC = () => {
                     <GoFileMedia className="text-[#1d9bf0]" onClick={handleSelectImage}/>
                     <BsEmojiSmile className="text-[#1d9bf0]"/>
                     <div>
-                        <button onClick={handleCreatePost}
-                                className='bg-[#1d9bf0] px-4 py-1.5 text-white font-semibold w-full rounded-full disabled:opacity-50'
-                                disabled={isNewPostButtonDisabled}>Post
+                        <button
+                            onClick={handleCreatePost}
+                            className='bg-[#1d9bf0] px-4 py-1.5 text-white font-semibold w-full rounded-full disabled:opacity-50'
+                            disabled={isNewPostButtonDisabled}
+                        >
+                            {type === CreatePostType.create ? 'Post' : 'Reply'}
                         </button>
                     </div>
                 </div>
