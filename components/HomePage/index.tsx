@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import CreatePost from "@/components/CreatePost";
 import {Post} from "@/gql/graphql";
 import XLayout from "@/components/Layout/XLayout";
@@ -8,20 +8,11 @@ import HeaderMenu from "@/components/HeaderMenu";
 import TabLayout from "@/components/Layout/TabLayout";
 import {useRecoilValue} from "recoil";
 import {userState} from "@/store/atoms/user";
-
-const tabs = [
-    {
-        title: "For you",
-        id: "for-you"
-    },
-    {
-        title: "Following",
-        id: "following"
-    }
-]
+import {homePageTabs} from "@/utils/tabs";
 
 const HomePage: React.FC = () => {
     const {posts = []} = useGetAllPosts()
+    const tabs = useMemo(() => homePageTabs(), [])
     const [activeTab, setActive] = useState(tabs[0].id)
     const [filteredPosts, setFilteredPosts] = useState(posts)
     const user = useRecoilValue(userState)
@@ -32,7 +23,7 @@ const HomePage: React.FC = () => {
 
             setFilteredPosts(followingPosts || []);
         } else setFilteredPosts(posts);
-    }, [user.following, posts, activeTab])
+    }, [user.following, posts, activeTab, tabs])
 
     return <XLayout>
         <HeaderMenu/>

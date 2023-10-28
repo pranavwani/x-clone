@@ -1,6 +1,6 @@
 import {GetServerSideProps, NextPage} from "next";
 import {graphqlClient} from "@/clients/api";
-import {getUserByID, getUserRelations} from "@/graphql/query/user";
+import {getUserByIDQuery, getUserRelations} from "@/graphql/query/user";
 import {User} from "@/gql/graphql";
 import XLayout from "@/components/Layout/XLayout";
 import Image from "next/image";
@@ -9,7 +9,7 @@ import FollowBtn from "@/components/FollowBtn";
 import TabLayout from "@/components/Layout/TabLayout";
 import Link from "next/link";
 import ProfilePageNav from "../../components/NavBar";
-import tabs from "@/utils/tabs";
+import {followPageTabs} from "@/utils/tabs";
 import {useRecoilValue} from "recoil";
 import {userState} from "@/store/atoms/user";
 
@@ -20,7 +20,7 @@ interface ServerProps {
 
 const UserFollowingPage: NextPage<ServerProps> = (props) => {
     const {following, user} = props
-    const tabLayoutTabs = useMemo(() => tabs(user), [user])
+    const tabLayoutTabs = useMemo(() => followPageTabs(user), [user])
     const loggedInUser = useRecoilValue(userState)
 
     return <XLayout>
@@ -63,7 +63,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     if (!id) return {notFound: true, props: {user: undefined}}
 
     const relations = await graphqlClient.request(getUserRelations, {getUserRelationsId: id})
-    const user = await graphqlClient.request(getUserByID, {id})
+    const user = await graphqlClient.request(getUserByIDQuery, {id})
 
     return {
         props: {

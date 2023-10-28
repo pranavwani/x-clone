@@ -5,12 +5,13 @@ import {AiOutlineHeart} from "react-icons/ai";
 import {FiUpload} from "react-icons/fi";
 
 interface FeedCardButtonsProps {
-    handleOpenReplyDialog: any
+    handleOpenReplyDialog?: any
 }
 
-const FeedCardButtons: React.FC<FeedCardButtonsProps> = ({ handleOpenReplyDialog }) => {
-    return <div className='flex justify-between text-gray-600 pr-3 mt-[12px] items-center text-xl' onClick={handleOpenReplyDialog}>
-        <div className='dark:hover:bg-blue-950 hover:bg-blue-100 rounded-full p-2 hover:text-[#1d9bf0]'>
+const FeedCardButtons: React.FC<FeedCardButtonsProps> = ({handleOpenReplyDialog}) => {
+    return <div className='flex justify-between text-gray-600 pr-3 pb-1 mt-[12px] items-center text-xl'>
+        <div className='dark:hover:bg-blue-950 hover:bg-blue-100 rounded-full p-2 hover:text-[#1d9bf0]'
+             onClick={handleOpenReplyDialog}>
             <BiMessageRounded/>
         </div>
         <div className='dark:hover:bg-[#1b2e16] hover:bg-green-100 rounded-full p-2 hover:text-[#40a327]'>

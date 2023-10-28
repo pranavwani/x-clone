@@ -23,29 +23,31 @@ export const getSignedURLForPostQuery = graphql(`
     }
 `)
 
-export const getPostByIDQuery = graphql(`
+export const getPostsWithRepliesQuery = graphql(`
     #graphql
-    query getPostByID($getPostByIdId: ID!) {
-      getPostByID(id: $getPostByIdId) {
+    query GetPostsWithReplies($authorId: ID!) {
+      getPostsWithReplies(authorID: $authorId) {
         id
         content
         imageURL
-        author {
-          firstName
-          lastName
-          profileImageUrl
-          id
-        }
         replies {
           id
           content
           imageURL
-          author {        
-            firstName
-            lastName
-            profileImageUrl
+          author {
             id
+            email
+            lastName
+            firstName
+            profileImageUrl
           }
+        }
+        author {
+          id
+          email
+          lastName
+          firstName
+          profileImageUrl
         }
       }
     }

@@ -7,12 +7,13 @@ interface FeedProps {
     post: Post
     showMedia: boolean
     isOpen?: boolean
+    connectLine?: boolean
 }
 
-const Feed: React.FC<FeedProps> = ({post, showMedia, isOpen}) => {
+const Feed: React.FC<FeedProps> = ({post, showMedia, isOpen, connectLine}) => {
     return <div className="grid grid-cols-12 gap-2">
         <div className="col-span-1 relative">
-            <div className={` ${isOpen ? 'block' : 'hidden'} connect-post-line w-[2px] bg-gray-300 dark:bg-gray-700 h-[100%] absolute top-0 left-1/2`}></div>
+            <div className={` ${isOpen || connectLine ? 'block' : 'hidden'} connect-post-line w-[2px] bg-gray-300 dark:bg-gray-700 h-[100%] absolute top-0 left-1/2`}></div>
             <div className="absolute">
                 <Link href={`/${post?.author?.id}`}>
                     {post.author?.profileImageUrl && <Image

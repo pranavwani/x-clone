@@ -9,20 +9,22 @@ import Posts from "@/components/Posts";
 import TabLayout from "@/components/Layout/TabLayout";
 import {useMemo} from "react";
 import {profilePageTabs} from "@/utils/tabs";
+import {getPostsWithRepliesQuery} from "@/graphql/query/post";
 
 interface ServerProps {
-    user?: User
+    user?: User,
+    posts: Post[]
 }
 
 const UserProfilePage: NextPage<ServerProps> = (props) => {
-    const {user} = props
+    const {user, posts} = props
     const tabs = useMemo(() => profilePageTabs(user as User), [user])
 
     return <XLayout>
         <NavBar route={"/"} subTitle={`${user?.posts?.length} Posts`} title={`${user?.firstName} ${user?.lastName}`}/>
         <ProfilePageHeader user={user as User}/>
-        <TabLayout tabs={tabs} activeTab={tabs[0].id} />
-        <Posts posts={user?.posts as Post[]}/>
+        <TabLayout tabs={tabs} activeTab={tabs[1].id} />
+        <Posts posts={posts}/>
     </XLayout>
 }
 
@@ -32,12 +34,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     if (!id) return {notFound: true, props: {user: undefined}}
 
     const user = await graphqlClient.request(getUserByIDQuery, {id})
+    const posts = await graphqlClient.request(getPostsWithRepliesQuery, {authorId: id})
 
     if (!user?.getUserByID) return {notFound: true, props: {user: undefined}}
 
     return {
         props: {
-            user: user.getUserByID
+            user: user.getUserByID,
+            posts: posts.getPostsWithReplies
         }
     }
 }

@@ -41,13 +41,28 @@ const FeedCard: React.FC<FeedCardProps> = (props) => {
 
     return (
         <div className="border-t border-inherit pr-2 pl-4 pt-3 pb-0 hover:bg-gray-100 dark:hover:bg-gray-900 transition-all cursor-pointer">
-            <Feed post={data} showMedia={true}/>
+            {/*connectLine={Number(data?.replies?.length) > 0}*/}
+            <Feed post={data} showMedia={true} />
             <div className="grid grid-cols-12 gap-2">
                 <div className="col-span-1"></div>
                 <div className="col-span-11">
                     <FeedCardButtons handleOpenReplyDialog={handleOpenReplyDialog}/>
                 </div>
             </div>
+            {
+                // connectLine={Number(data?.replies?.length) > 0 && index < Number(data.replies?.length) - 1}
+                data.replies?.map((reply, index) => (
+                    <div key={reply?.id}>
+                        <Feed post={reply as Post} showMedia={true}/>
+                        <div className="grid grid-cols-12 gap-2">
+                            <div className="col-span-1"></div>
+                            <div className="col-span-11">
+                                <FeedCardButtons handleOpenReplyDialog={handleOpenReplyDialog}/>
+                            </div>
+                        </div>
+                    </div>
+                ))
+            }
             <ReplyDialog post={data} isOpen={isReplayDialogOpen} closeDialog={handleCloseReplyDialog}/>
         </div>
     );
